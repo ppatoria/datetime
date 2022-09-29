@@ -1,104 +1,100 @@
 #pragma once
 #include <chrono>
-#include <TimeDuration.hpp>
-#include <Date.hpp>
+#include <dt/Date.hpp>
+#include <dt/TimeDuration.hpp>
 //#include "TypeTraits.h"
 
+namespace dt {
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 using namespace boost::local_time;
 
-class UtcDateTime : public ptime
-{
+class UtcDateTime : public ptime {
 public:
-
     typedef ptime DataType;
 
-
-    UtcDateTime ()
-        : DataType ()
+    UtcDateTime()
+        : DataType()
     {
     }
 
-    UtcDateTime (const DataType & value)
-        : DataType (value)
+    UtcDateTime(const DataType& value)
+        : DataType(value)
     {
     }
 
-    UtcDateTime (const Date & date, const TimeDuration & time = TimeDuration (0, 0, 0))
-        : DataType (date, time)
+    UtcDateTime(const Date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+        : DataType(date, time)
     {
     }
 
-    UtcDateTime (const Long & value)
-        : DataType (time_rep_type (value))
+    UtcDateTime(const Long& value)
+        : DataType(time_rep_type(value))
     {
     }
 
-    UtcDateTime (const local_date_time & value)
-        : DataType (value.utc_time ())
+    UtcDateTime(const local_date_time& value)
+        : DataType(value.utc_time())
     {
     }
-    UtcDateTime & operator = (const DataType & value)
+
+    UtcDateTime& operator=(const DataType& value)
     {
-        DataType::operator = (value);
+        DataType::operator=(value);
         return *this;
     }
 
-    UtcDateTime & operator = (const Date & value)
+    UtcDateTime& operator=(const Date& value)
     {
-        *this = UtcDateTime (value);
+        *this = UtcDateTime(value);
         return *this;
     }
 
-    UtcDateTime & operator = (const local_date_time & value)
+    UtcDateTime& operator=(const local_date_time& value)
     {
-        *this = UtcDateTime (value);
+        *this = UtcDateTime(value);
         return *this;
     }
 
-    const DataType & value () const
-    {
-        return *this;
-    }
-
-    DataType & value ()
+    const DataType& value() const
     {
         return *this;
     }
 
-    void clear ()
+    DataType& value()
     {
-        *this = UtcDateTime ();
+        return *this;
     }
 
-    bool empty () const
+    void clear()
     {
-        return is_not_a_date_time ();
+        *this = UtcDateTime();
     }
 
-    Date date () const
+    bool empty() const
     {
-        if (empty ())
-        {
-            return Date ();
+        return is_not_a_date_time();
+    }
+
+    Date date() const
+    {
+        if (empty()) {
+            return Date();
         }
 
-        return DataType::date ();
+        return DataType::date();
     }
 
-    TimeDuration time () const
+    TimeDuration time() const
     {
-        if (empty ())
-        {
-            return TimeDuration ();
+        if (empty()) {
+            return TimeDuration();
         }
 
-        return time_of_day ();
+        return time_of_day();
     }
 
-    static
-    UtcDateTime now ()
+    static UtcDateTime now()
     {
 #ifdef SIMULATION
 
@@ -106,89 +102,82 @@ public:
             return _simulationTime;
 #endif
 
-        return microsec_clock::universal_time ();
+        return microsec_clock::universal_time();
     }
 
-    static
-    UtcDateTime epoch ()
+    static UtcDateTime epoch()
     {
-        static const DataType _epoch (boost::posix_time::from_time_t (0));
+        static const DataType _epoch(boost::posix_time::from_time_t(0));
         return _epoch;
     }
 
-    static
-    Date today ()
+    static Date today()
     {
-        return now ().date ();
+        return now().date();
     }
 
-    operator Long () const
+    operator Long() const
     {
-        if (empty ())
-        {
-            return Long ();
+        if (empty()) {
+            return Long();
         }
 
         // Extract internal time respresentation in date_time::base_time<ptime, posix_time_system>
-        return time_.time_count (); 
+        return time_.time_count();
     }
 
     operator std::chrono::system_clock::time_point() const
     {
         TimeDuration t = value() - epoch();
 
-        return std::chrono::system_clock::time_point
-        (
-            std::chrono::duration_cast<std::chrono::system_clock::time_point::duration>( static_cast<std::chrono::microseconds>(t) )
-        );
+        return std::chrono::system_clock::time_point(
+            std::chrono::duration_cast<std::chrono::system_clock::time_point::duration>(static_cast<std::chrono::microseconds>(t)));
     }
 
-    String toString () const
+    String toString() const
     {
         String s;
-        toString (s);
+        toString(s);
 
         return s;
     }
 
-    String toString (const char * format) const
+    String toString(const char* format) const
     {
         String s;
-        toString (s, format);
+        toString(s, format);
 
         return s;
     }
 
-    void toString (String & s) const
+    void toString(String& s) const
     {
-        if (empty ())
-        {
-            s.clear ();
+        if (empty()) {
+            s.clear();
             return;
         }
 
-        s = to_iso_extended_string (*this);
+        s = to_iso_extended_string(*this);
     }
 
     // See "Date Time Input/Output" in boost documentation for a detailed description of various formats
-    UtcDateTime& fromString (const String & value, const String & format = "");
-    void         toString   (String & s, const char * format) const;
+    UtcDateTime& fromString(const String& value, const String& format = "");
+    void toString(String& s, const char* format) const;
 
-    friend std::ostream& operator<< (std::ostream& os, const UtcDateTime & value)
+    friend std::ostream& operator<<(std::ostream& os, const UtcDateTime& value)
     {
-		return os << value.toString ();
+        return os << value.toString();
     }
 
 #ifdef SIMULATION
 
-    static void setSimulationTime (const UtcDateTime & simTime)
+    static void setSimulationTime(const UtcDateTime& simTime)
     {
         _simulationTime = simTime;
         _simulationTimeInitialized = true;
     }
 
-    private:
-
+private:
     static UtcDateTime _simulationTime;
     static bool _simulationTimeInitialized;
 
@@ -196,96 +185,85 @@ public:
 };
 #ifdef SIMULATION
 
-    UtcDateTime UtcDateTime::_simulationTime = UtcDateTime ();
-    bool UtcDateTime::_simulationTimeInitialized = false;
+UtcDateTime UtcDateTime::_simulationTime = UtcDateTime();
+bool UtcDateTime::_simulationTimeInitialized = false;
 
 #endif
 
-static_assert (std::is_trivially_copyable<UtcDateTime::DataType>::value, "Oops, why UtcDateTime::DataType is not trivially copyable?!");
-static_assert (std::is_trivially_copyable<UtcDateTime>::value, "Oops, why UtcDateTime is not trivially copyable?!");
+static_assert(std::is_trivially_copyable<UtcDateTime::DataType>::value, "Oops, why UtcDateTime::DataType is not trivially copyable?!");
+static_assert(std::is_trivially_copyable<UtcDateTime>::value, "Oops, why UtcDateTime is not trivially copyable?!");
 
 // See "Date Time Input/Output" in boost documentation for a detailed description of various formats
 UtcDateTime&
-UtcDateTime::fromString (const String & value, const String & format /* = "" */)
+UtcDateTime::fromString(const String& value, const String& format /* = "" */)
 {
     using namespace boost::gregorian;
     using namespace boost::posix_time;
     using namespace boost::local_time;
 
-    if (value.empty ())
-    {
-        clear ();
+    if (value.empty()) {
+        clear();
         return *this;
     }
 
     DataType dt;
-    try
-    {
+    try {
         time_input_facet facet;
-        if (format.empty ())
-        {
-            facet.set_iso_extended_format ();
-        }
-        else
-        {
-            facet.format (format.c_str ());
+        if (format.empty()) {
+            facet.set_iso_extended_format();
+        } else {
+            facet.format(format.c_str());
         }
 
-        std::istringstream s (value);
-        s.exceptions (std::ios_base::failbit); // throw exception when parsing fails
+        std::istringstream s(value);
+        s.exceptions(std::ios_base::failbit); // throw exception when parsing fails
 
         std::istreambuf_iterator<char> i(s), e;
-        facet.get (i, e, s, dt);
-    }
-    catch (const std::out_of_range & e)
-    {
-      throw e; // TODO fix
-        // FRAMEWORK_THROW
-        // (
-        //     ConversionException,
-        //     "Failed to parse <" << value << "> as UtcDateTime "
-        //     "using format <" << format << "> "
-        //     "with error <" << e.what () << ">"
-        // );
+        facet.get(i, e, s, dt);
+    } catch (const std::out_of_range& e) {
+        throw e; // TODO fix
+                 // FRAMEWORK_THROW
+                 // (
+                 //     ConversionException,
+                 //     "Failed to parse <" << value << "> as UtcDateTime "
+                 //     "using format <" << format << "> "
+                 //     "with error <" << e.what () << ">"
+                 // );
     }
 
     *this = dt;
     return *this;
 }
 
-void 
-UtcDateTime::toString (String & s, const char * format) const
+void UtcDateTime::toString(String& s, const char* format) const
 {
     using namespace boost::posix_time;
 
-    if (NULL == format || 0 == *format)
-    {
-        return toString (s);
+    if (NULL == format || 0 == *format) {
+        return toString(s);
     }
 
-    try
-    {
+    try {
         time_facet facet;
-        facet.format (format);
-        
+        facet.format(format);
+
         std::ostringstream str;
-        str.exceptions (std::ios_base::failbit); // throw exception when parsing fails
+        str.exceptions(std::ios_base::failbit); // throw exception when parsing fails
 
         std::ostreambuf_iterator<char> ost(str);
-        facet.put (ost, str, ' ', *this);
+        facet.put(ost, str, ' ', *this);
 
-        s = str.str ();
-    }
-    catch (const std::out_of_range & e)
-    {
-      throw e;
-      //TODO fix this
-        // FRAMEWORK_THROW
-        // (
-        //     framework::ConversionException,
-        //     "Failed to format <" << *this << "> "
-        //     "using format <" << format << "> " 
-        //     "with error <" << e.what () << ">"
-        // );
+        s = str.str();
+    } catch (const std::out_of_range& e) {
+        throw e;
+        // TODO fix this
+        //  FRAMEWORK_THROW
+        //  (
+        //      framework::ConversionException,
+        //      "Failed to format <" << *this << "> "
+        //      "using format <" << format << "> "
+        //      "with error <" << e.what () << ">"
+        //  );
     }
 }
+} // namespace dt

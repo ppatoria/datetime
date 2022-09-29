@@ -1,136 +1,129 @@
 #pragma once
 
 /* #include <String.h> */
+#include <dt/TypeTraits.hpp>
 #include <string>
-#include <TypeTraits.hpp>
 
 #include <boost/cstdint.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/functional/hash/hash.hpp>
+#include <boost/lexical_cast.hpp>
 #include <limits>
 #include <string>
 
+namespace dt {
+using String = std::string;
 
-namespace dt{
-using String=std::string;
-
-class Integer
-{
+class Integer {
     boost::int32_t _value;
 
 public:
-
     typedef boost::int32_t DataType;
 
-
-    constexpr Integer ()
-        : _value((std::numeric_limits<DataType>::min) ())
+    constexpr Integer()
+        : _value((std::numeric_limits<DataType>::min)())
     {
     }
 
-    Integer (const DataType & value)
-        : _value (value)
+    Integer(const DataType& value)
+        : _value(value)
     {
     }
 
-    operator const DataType & () const
-    {
-        return _value;
-    }
-
-    operator DataType & ()
+    operator const DataType&() const
     {
         return _value;
     }
 
-    const DataType & value () const
+    operator DataType&()
     {
         return _value;
     }
 
-    DataType & value ()
+    const DataType& value() const
     {
         return _value;
     }
 
-    void clear ()
+    DataType& value()
     {
-        _value = Integer ();
+        return _value;
     }
 
-    bool isZero () const
+    void clear()
+    {
+        _value = Integer();
+    }
+
+    bool isZero() const
     {
         return 0 == _value;
     }
 
-    static bool empty (const DataType & value)
+    static bool empty(const DataType& value)
     {
         return (std::numeric_limits<DataType>::min)() == value;
     }
 
-    bool empty () const
+    bool empty() const
     {
-        return empty (_value);
+        return empty(_value);
     }
-    
-    String toString () const
+
+    String toString() const
     {
         String s;
-        toString (s);
+        toString(s);
 
         return s;
     }
 
-    void toString (String & s) const;
+    void toString(String& s) const;
 
-    Integer & fromString (const String & s)
+    Integer& fromString(const String& s)
     {
-        return fromString (s.c_str ());
+        return fromString(s.c_str());
     }
 
-    Integer & fromString (const char * s);
+    Integer& fromString(const char* s);
 
-    friend std::ostream & operator<< (std::ostream & os, const Integer & value)
+    friend std::ostream& operator<<(std::ostream& os, const Integer& value)
     {
-        return os << value.toString ();
+        return os << value.toString();
     }
 };
 
 /// Special Integer class to hold enumerated values
-class EnumerationValue : public Integer
-{
+class EnumerationValue : public Integer {
 public:
-
-    EnumerationValue ()
-    {
-    }
-    
-    EnumerationValue (const Integer & value)
-        : Integer (value)
+    EnumerationValue()
     {
     }
 
-    EnumerationValue & operator = (const Integer & value)
+    EnumerationValue(const Integer& value)
+        : Integer(value)
     {
-        Integer::operator = (value);
+    }
+
+    EnumerationValue& operator=(const Integer& value)
+    {
+        Integer::operator=(value);
         return *this;
     }
 
-    template<typename ENUMERATION>
-    operator ENUMERATION () const
+    template <typename ENUMERATION>
+    operator ENUMERATION() const
     {
         ENUMERATION e;
-        e = static_cast<typename ENUMERATION::DataType> (value ());
-        e.validate ();
-        
+        e = static_cast<typename ENUMERATION::DataType>(value());
+        e.validate();
+
         return e;
     }
 };
 
-inline
-std::size_t hash_value (const Integer & i)
+inline std::size_t hash_value(const Integer& i)
 {
-    return boost::hash_value (i.value () );
+    return boost::hash_value(i.value());
 }
 
 } // namespace dt

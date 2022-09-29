@@ -13,8 +13,8 @@ add_executable( tests UtcDateTimeTests.cpp)
 set(BOOST_INCLUDE_DIR "/mnt/c/Users/ppato/source/boost.1.80.0/lib/native/include/")
 message("BOOST_INCLUDE_DIR: ${BOOST_INCLUDE_DIR}")
 target_include_directories(tests PUBLIC
-  "/mnt/c/Users/ppato/source/boost.1.80.0/lib/native/include/"
-  ${CMAKE_SOURCE_DIR}/..)
+  "${CMAKE_SOURCE_DIR}/.."
+  ${BOOST_INCLUDE_DIR})
 
 # ${BOOST_INCLUDE_DIRS}
 
