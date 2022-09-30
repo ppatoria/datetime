@@ -48,7 +48,7 @@ public:
     {
     }
 
-    LocalDateTime(const Date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+    LocalDateTime(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
         : DataType(date, time, timezone(), EXCEPTION_ON_ERROR)
     {
     }
@@ -58,7 +58,7 @@ public:
         return *this;
     }
 
-    LocalDateTime& operator=(const Date& value)
+    LocalDateTime& operator=(const dt::date& value)
     {
         *this = LocalDateTime(value);
         return *this;
@@ -90,10 +90,10 @@ public:
         return is_not_a_date_time();
     }
 
-    Date date() const
+    dt::date date() const
     {
         if (empty()) {
-            return Date();
+            return date();
         }
 
         return local_time().date();
@@ -113,7 +113,7 @@ public:
         return UtcDateTime::now();
     }
 
-    static Date today()
+    static dt::date today()
     {
         return now().date();
     }
@@ -149,7 +149,7 @@ public:
         s = boost::posix_time::to_iso_extended_string(local_time());
     }
 
-    // See "Date Time Input/Output" in boost documentation for a detailed description of various formats
+    // See "date Time Input/Output" in boost documentation for a detailed description of various formats
     LocalDateTime& fromString(const String& value, const String& format = "");
     void toString(String& s, const char* format) const;
 
@@ -252,7 +252,7 @@ void LocalDateTime::timezone(const std::string& spec)
     timezone(zone);
 }
 
-// See "Date Time Input/Output" in boost documentation for a detailed description of various formats
+// See "date Time Input/Output" in boost documentation for a detailed description of various formats
 LocalDateTime&
 LocalDateTime::fromString(const String& value, const String& format /* = "" */)
 {

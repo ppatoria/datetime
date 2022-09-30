@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
-#include <dt/Date.hpp>
 #include <dt/TimeDuration.hpp>
+#include <dt/date.hpp>
 //#include "TypeTraits.h"
 
 namespace dt {
@@ -23,7 +23,7 @@ public:
     {
     }
 
-    UtcDateTime(const Date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+    UtcDateTime(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
         : DataType(date, time)
     {
     }
@@ -44,7 +44,7 @@ public:
         return *this;
     }
 
-    UtcDateTime& operator=(const Date& value)
+    UtcDateTime& operator=(const dt::date& value)
     {
         *this = UtcDateTime(value);
         return *this;
@@ -76,10 +76,10 @@ public:
         return is_not_a_date_time();
     }
 
-    Date date() const
+    dt::date date() const
     {
         if (empty()) {
-            return Date();
+            return date();
         }
 
         return DataType::date();
@@ -111,7 +111,7 @@ public:
         return _epoch;
     }
 
-    static Date today()
+    static dt::date today()
     {
         return now().date();
     }
@@ -160,7 +160,7 @@ public:
         s = to_iso_extended_string(*this);
     }
 
-    // See "Date Time Input/Output" in boost documentation for a detailed description of various formats
+    // See "date Time Input/Output" in boost documentation for a detailed description of various formats
     UtcDateTime& fromString(const String& value, const String& format = "");
     void toString(String& s, const char* format) const;
 
@@ -193,7 +193,7 @@ bool UtcDateTime::_simulationTimeInitialized = false;
 static_assert(std::is_trivially_copyable<UtcDateTime::DataType>::value, "Oops, why UtcDateTime::DataType is not trivially copyable?!");
 static_assert(std::is_trivially_copyable<UtcDateTime>::value, "Oops, why UtcDateTime is not trivially copyable?!");
 
-// See "Date Time Input/Output" in boost documentation for a detailed description of various formats
+// See "date Time Input/Output" in boost documentation for a detailed description of various formats
 UtcDateTime&
 UtcDateTime::fromString(const String& value, const String& format /* = "" */)
 {

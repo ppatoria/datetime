@@ -10,40 +10,39 @@ namespace dt {
 using namespace boost::gregorian;
 using String = std::string;
 
-class Date : public boost::gregorian::date {
+class date : public boost::gregorian::date {
 public:
-    typedef date DataType;
+    using DataType = boost::gregorian::date;
+    using YearType = DataType::year_type;
+    using MonthType = DataType::month_type;
+    using DayType = DataType::day_type;
 
-    typedef DataType::year_type YearType;
-    typedef DataType::month_type MonthType;
-    typedef DataType::day_type DayType;
-
-    Date()
+    date()
         : DataType()
     {
     }
 
-    Date(const DataType& value)
+    date(const DataType& value)
         : DataType(value)
     {
     }
 
-    Date(const YearType& year, const MonthType& month, const DayType& day)
+    date(const YearType& year, const MonthType& month, const DayType& day)
         : DataType(year, month, day)
     {
     }
 
-    Date(const YearType& year, int month, const DayType& day)
+    date(const YearType& year, int month, const DayType& day)
         : DataType(year, boost::gregorian::date::month_type(month), day)
     {
     }
 
-    Date(size_t dayNumber)
+    date(size_t dayNumber)
         : DataType(calendar_type::from_day_number(long(dayNumber)))
     {
     }
 
-    Date& operator=(const DataType& value)
+    date& operator=(const DataType& value)
     {
         DataType::operator=(value);
         return *this;
@@ -55,7 +54,7 @@ public:
 
     operator const DataType&() const { return *this; }
 
-    void clear() { *this = Date(); }
+    void clear() { *this = date(); }
 
     bool empty() const { return is_not_a_date(); }
 
@@ -91,18 +90,18 @@ public:
         s = to_iso_extended_string(value());
     }
 
-    // See "Date Time Input/Output" in boost documentation for a detailed
+    // See "date Time Input/Output" in boost documentation for a detailed
     // description of various formats
-    Date& fromString(const char* value, const char* format = "");
+    date& fromString(const char* value, const char* format = "");
 
-    Date& fromString(const String& s, const char* format = "")
+    date& fromString(const String& s, const char* format = "")
     {
         return fromString(s.c_str(), format);
     }
 
     void toString(String& s, const char* format) const;
 
-    friend std::ostream& operator<<(std::ostream& os, const Date& value)
+    friend std::ostream& operator<<(std::ostream& os, const date& value)
     {
         return os << value.toString();
     }
