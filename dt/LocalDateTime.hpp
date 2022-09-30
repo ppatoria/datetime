@@ -8,7 +8,7 @@ using namespace boost::gregorian;
 using namespace boost::posix_time;
 using namespace boost::local_time;
 
-class LocalDateTime : public local_date_time {
+class local_date_time : public boost::local_time::local_date_time {
 public:
     using DataType = boost::local_time::local_date_time;
     using time_zone_ptr = boost::local_time::time_zone_ptr;
@@ -33,40 +33,40 @@ public:
     /// Set the local time zone from a POSIX time zone specification
     static void timezone(const std::string& spec);
 
-    LocalDateTime()
+    local_date_time()
         : DataType(not_a_date_time)
     {
     }
 
-    LocalDateTime(const DataType& value)
+    local_date_time(const DataType& value)
         : DataType(value)
     {
     }
 
-    LocalDateTime(const UtcDateTime& value)
+    local_date_time(const UtcDateTime& value)
         : DataType(value, timezone())
     {
     }
 
-    LocalDateTime(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+    local_date_time(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
         : DataType(date, time, timezone(), EXCEPTION_ON_ERROR)
     {
     }
-    LocalDateTime& operator=(const DataType& value)
+    local_date_time& operator=(const DataType& value)
     {
         DataType::operator=(value);
         return *this;
     }
 
-    LocalDateTime& operator=(const dt::date& value)
+    local_date_time& operator=(const dt::date& value)
     {
-        *this = LocalDateTime(value);
+        *this = local_date_time(value);
         return *this;
     }
 
-    LocalDateTime& operator=(const UtcDateTime& value)
+    local_date_time& operator=(const UtcDateTime& value)
     {
-        *this = LocalDateTime(value);
+        *this = local_date_time(value);
         return *this;
     }
 
@@ -82,7 +82,7 @@ public:
 
     void clear()
     {
-        *this = LocalDateTime();
+        *this = local_date_time();
     }
 
     bool empty() const
@@ -108,7 +108,7 @@ public:
         return local_time().time_of_day();
     }
 
-    static LocalDateTime now()
+    static local_date_time now()
     {
         return UtcDateTime::now();
     }
@@ -150,10 +150,10 @@ public:
     }
 
     // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-    LocalDateTime& fromString(const String& value, const String& format = "");
+    local_date_time& fromString(const String& value, const String& format = "");
     void toString(String& s, const char* format) const;
 
-    friend std::ostream& operator<<(std::ostream& os, const LocalDateTime& value)
+    friend std::ostream& operator<<(std::ostream& os, const local_date_time& value)
     {
         String s;
         value.toString(s);
@@ -161,8 +161,8 @@ public:
     }
 };
 
-static_assert(!std::is_trivially_copyable<LocalDateTime::DataType>::value, "Oops, why LocalDateTime::DataType is trivially copyable?!");
-static_assert(!std::is_trivially_copyable<LocalDateTime>::value, "Oops, why LocalDateTime is trivially copyable?!");
+static_assert(!std::is_trivially_copyable<local_date_time::DataType>::value, "Oops, why local_date_time::DataType is trivially copyable?!");
+static_assert(!std::is_trivially_copyable<local_date_time>::value, "Oops, why local_date_time is trivially copyable?!");
 #ifndef _timezone
 #define _timezone ::timezone
 #endif
@@ -202,12 +202,12 @@ namespace {
     }
 
     // Trigger time zone initialization
-    const LocalDateTime _;
+    const local_date_time _;
 
 } // namepsace
 
-LocalDateTime::time_zone_ptr
-LocalDateTime::defaultTimeZone()
+local_date_time::time_zone_ptr
+local_date_time::defaultTimeZone()
 {
     tzset();
 
@@ -232,7 +232,7 @@ LocalDateTime::defaultTimeZone()
         os << fix_tzname(_tzname[1]) << ",M3.2.0,M11.1.0";
     }
 
-    return LocalDateTime::time_zone_ptr(new boost::local_time::posix_time_zone(os.str()));
+    return local_date_time::time_zone_ptr(new boost::local_time::posix_time_zone(os.str()));
 }
 
 /// Set the local time zone
@@ -240,21 +240,21 @@ LocalDateTime::defaultTimeZone()
 /// could make it safe by protecting this object with a mutex, but it
 /// is not expected that the timezone will be changed once the
 /// application has been started.
-void LocalDateTime::timezone(const LocalDateTime::time_zone_ptr& timeZone)
+void local_date_time::timezone(const local_date_time::time_zone_ptr& timeZone)
 {
-    LocalDateTime::timezone() = timeZone;
+    local_date_time::timezone() = timeZone;
 }
 
 /// Set the local time zone from a POSIX time zone specification
-void LocalDateTime::timezone(const std::string& spec)
+void local_date_time::timezone(const std::string& spec)
 {
     time_zone_ptr zone(new posix_time_zone(spec));
     timezone(zone);
 }
 
 // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-LocalDateTime&
-LocalDateTime::fromString(const String& value, const String& format /* = "" */)
+local_date_time&
+local_date_time::fromString(const String& value, const String& format /* = "" */)
 {
     UtcDateTime dt;
     dt.fromString(value, format);
@@ -264,11 +264,11 @@ LocalDateTime::fromString(const String& value, const String& format /* = "" */)
         return *this;
     }
 
-    *this = LocalDateTime(dt.date(), dt.time());
+    *this = local_date_time(dt.date(), dt.time());
     return *this;
 }
 
-void LocalDateTime::toString(String& s, const char* format) const
+void local_date_time::toString(String& s, const char* format) const
 {
     using namespace boost::posix_time;
 

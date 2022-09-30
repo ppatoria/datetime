@@ -4,11 +4,10 @@
 
 int main()
 {
-    using namespace dt;
-    auto now_utc = UtcDateTime::now().toString();
+    auto now_utc = dt::UtcDateTime::now().toString();
     std::cout << now_utc << std::endl;
 
-    auto now_local = LocalDateTime::now().toString();
+    auto now_local = dt::local_date_time::now().toString();
     std::cout << now_local << std::endl;
 
     return 0;
