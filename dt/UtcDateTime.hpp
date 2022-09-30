@@ -7,7 +7,6 @@
 namespace dt {
 using namespace boost::gregorian;
 using namespace boost::posix_time;
-using namespace boost::local_time;
 
 class UtcDateTime : public ptime {
 public:
@@ -33,7 +32,7 @@ public:
     {
     }
 
-    UtcDateTime(const local_date_time& value)
+    UtcDateTime(const boost::local_time::local_date_time& value)
         : DataType(value.utc_time())
     {
     }
@@ -50,7 +49,7 @@ public:
         return *this;
     }
 
-    UtcDateTime& operator=(const local_date_time& value)
+    UtcDateTime& operator=(const boost::local_time::local_date_time& value)
     {
         *this = UtcDateTime(value);
         return *this;
