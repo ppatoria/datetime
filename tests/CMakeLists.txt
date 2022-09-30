@@ -10,13 +10,17 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable( tests UtcDateTimeTests.cpp)
-set(BOOST_INCLUDE_DIR "/mnt/c/Users/ppato/source/boost.1.80.0/lib/native/include/")
-message("BOOST_INCLUDE_DIR: ${BOOST_INCLUDE_DIR}")
+
+set(Boost_USE_STATIC_LIBS OFF)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
+find_package(Boost REQUIRED)
+message(STATUS "Boost version: ${Boost_VERSION}")
 target_include_directories(tests PUBLIC
   "${CMAKE_SOURCE_DIR}/.."
-  ${BOOST_INCLUDE_DIR})
-
-# ${BOOST_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIR}  
+  )
 
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
 enable_testing()
