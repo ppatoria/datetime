@@ -9,75 +9,75 @@ using namespace boost::gregorian;
 
 class date : public boost::gregorian::date {
 public:
-    using DataType = boost::gregorian::date;
-    using YearType = DataType::year_type;
-    using MonthType = DataType::month_type;
-    using DayType = DataType::day_type;
+    using parent_type = boost::gregorian::date;
+    using year_type = parent_type::year_type;
+    using month_type = parent_type::month_type;
+    using day_type = parent_type::day_type;
 
     date()
-        : DataType()
+        : parent_type()
     {
     }
 
-    date(const DataType& value)
-        : DataType(value)
+    date(const parent_type& value)
+        : parent_type(value)
     {
     }
 
-    date(const YearType& year, const MonthType& month, const DayType& day)
-        : DataType(year, month, day)
+    date(const year_type& year, const month_type& month, const day_type& day)
+        : parent_type(year, month, day)
     {
     }
 
-    date(const YearType& year, int month, const DayType& day)
-        : DataType(year, boost::gregorian::date::month_type(month), day)
+    date(const year_type& year, int month, const day_type& day)
+        : parent_type(year, boost::gregorian::date::month_type(month), day)
     {
     }
 
     date(size_t dayNumber)
-        : DataType(calendar_type::from_day_number(long(dayNumber)))
+        : parent_type(calendar_type::from_day_number(long(dayNumber)))
     {
     }
 
-    date& operator=(const DataType& value)
+    date& operator=(const parent_type& value)
     {
-        DataType::operator=(value);
+        parent_type::operator=(value);
         return *this;
     }
 
-    const DataType& value() const { return *this; }
+    const parent_type& value() const { return *this; }
 
-    DataType& value() { return *this; }
+    parent_type& value() { return *this; }
 
-    operator const DataType&() const { return *this; }
+    operator const parent_type&() const { return *this; }
 
     void clear() { *this = date(); }
 
     bool empty() const { return is_not_a_date(); }
 
-    YearType year() const { return DataType::year(); }
+    year_type year() const { return parent_type::year(); }
 
-    MonthType month() const { return DataType::month(); }
+    month_type month() const { return parent_type::month(); }
 
-    DayType day() const { return DataType::day(); }
+    day_type day() const { return parent_type::day(); }
 
-    std::string toString() const
+    std::string to_string() const
     {
         std::string s;
-        toString(s);
+        to_string(s);
 
         return s;
     }
 
-    std::string toString(const char* format) const
+    std::string to_string(const char* format) const
     {
         std::string s;
-        toString(s, format);
+        to_string(s, format);
 
         return s;
     }
 
-    void toString(std::string& s) const
+    void to_string(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -96,11 +96,11 @@ public:
         return fromString(s.c_str(), format);
     }
 
-    void toString(std::string& s, const char* format) const;
+    void to_string(std::string& s, const char* format) const;
 
     friend std::ostream& operator<<(std::ostream& os, const date& value)
     {
-        return os << value.toString();
+        return os << value.to_string();
     }
 };
 } // namespace dt

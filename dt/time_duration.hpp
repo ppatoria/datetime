@@ -122,7 +122,7 @@ public:
         return std::chrono::microseconds(total_microseconds());
     }
 
-    void toString(std::string& s) const
+    void to_string(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -132,10 +132,10 @@ public:
         s = to_simple_string(*this);
     }
 
-    std::string toString() const
+    std::string to_string() const
     {
         std::string s;
-        toString(s);
+        to_string(s);
 
         return s;
     }
@@ -168,7 +168,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const time_duration& value)
     {
-        return os << value.toString();
+        return os << value.to_string();
     }
 };
 

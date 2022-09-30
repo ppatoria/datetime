@@ -10,7 +10,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 add_executable( tests
-  utc_date_time_tests.cpp)
+  date_tests.cpp
+  utc_date_time_tests.cpp
+  )
 
 set(Boost_USE_STATIC_LIBS OFF)
 set(Boost_USE_MULTITHREADED ON)

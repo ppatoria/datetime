@@ -9,36 +9,36 @@ using namespace boost::posix_time;
 
 class utc_date_time : public ptime {
 public:
-    using DataType = ptime;
+    using parent_type = ptime;
 
     utc_date_time()
-        : DataType()
+        : parent_type()
     {
     }
 
-    utc_date_time(const DataType& value)
-        : DataType(value)
+    utc_date_time(const parent_type& value)
+        : parent_type(value)
     {
     }
 
     utc_date_time(const dt::date& date, const dt::time_duration& time = dt::time_duration(0, 0, 0))
-        : DataType(date, time)
+        : parent_type(date, time)
     {
     }
 
     utc_date_time(const long& value)
-        : DataType(time_rep_type(value))
+        : parent_type(time_rep_type(value))
     {
     }
 
     utc_date_time(const boost::local_time::local_date_time& value)
-        : DataType(value.utc_time())
+        : parent_type(value.utc_time())
     {
     }
 
-    utc_date_time& operator=(const DataType& value)
+    utc_date_time& operator=(const parent_type& value)
     {
-        DataType::operator=(value);
+        parent_type::operator=(value);
         return *this;
     }
 
@@ -54,12 +54,12 @@ public:
         return *this;
     }
 
-    const DataType& value() const
+    const parent_type& value() const
     {
         return *this;
     }
 
-    DataType& value()
+    parent_type& value()
     {
         return *this;
     }
@@ -80,7 +80,7 @@ public:
             return date();
         }
 
-        return DataType::date();
+        return parent_type::date();
     }
 
     dt::time_duration time() const
@@ -105,7 +105,7 @@ public:
 
     static utc_date_time epoch()
     {
-        static const DataType _epoch(boost::posix_time::from_time_t(0));
+        static const parent_type _epoch(boost::posix_time::from_time_t(0));
         return _epoch;
     }
 
@@ -133,23 +133,23 @@ public:
         return std::chrono::system_clock::time_point(std::chrono::duration_cast<chrono_duration>(static_cast<std::chrono::microseconds>(t)));
     }
 
-    std::string toString() const
+    std::string to_string() const
     {
         std::string s;
-        toString(s);
+        to_string(s);
 
         return s;
     }
 
-    std::string toString(const char* format) const
+    std::string to_string(const char* format) const
     {
         std::string s;
-        toString(s, format);
+        to_string(s, format);
 
         return s;
     }
 
-    void toString(std::string& s) const
+    void to_string(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -161,11 +161,11 @@ public:
 
     // See "date Time Input/Output" in boost documentation for a detailed description of various formats
     utc_date_time& fromString(const std::string& value, const std::string& format = "");
-    void toString(std::string& s, const char* format) const;
+    void to_string(std::string& s, const char* format) const;
 
     friend std::ostream& operator<<(std::ostream& os, const utc_date_time& value)
     {
-        return os << value.toString();
+        return os << value.to_string();
     }
 
 #ifdef SIMULATION
@@ -189,7 +189,7 @@ bool utc_date_time::_simulationTimeInitialized = false;
 
 #endif
 
-static_assert(std::is_trivially_copyable<utc_date_time::DataType>::value, "Oops, why utc_date_time::DataType is not trivially copyable?!");
+static_assert(std::is_trivially_copyable<utc_date_time::parent_type>::value, "Oops, why utc_date_time::parent_type is not trivially copyable?!");
 static_assert(std::is_trivially_copyable<utc_date_time>::value, "Oops, why utc_date_time is not trivially copyable?!");
 
 // See "date Time Input/Output" in boost documentation for a detailed description of various formats
@@ -205,7 +205,7 @@ utc_date_time::fromString(const std::string& value, const std::string& format /*
         return *this;
     }
 
-    DataType dt;
+    parent_type dt;
     try {
         time_input_facet facet;
         if (format.empty()) {
@@ -234,12 +234,12 @@ utc_date_time::fromString(const std::string& value, const std::string& format /*
     return *this;
 }
 
-void utc_date_time::toString(std::string& s, const char* format) const
+void utc_date_time::to_string(std::string& s, const char* format) const
 {
     using namespace boost::posix_time;
 
     if (NULL == format || 0 == *format) {
-        return toString(s);
+        return to_string(s);
     }
 
     try {

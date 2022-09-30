@@ -122,23 +122,23 @@ public:
         return utc_date_time(*this);
     }
 
-    std::string toString() const
+    std::string to_string() const
     {
         std::string s;
-        toString(s);
+        to_string(s);
 
         return s;
     }
 
-    std::string toString(const char* format) const
+    std::string to_string(const char* format) const
     {
         std::string s;
-        toString(s, format);
+        to_string(s, format);
 
         return s;
     }
 
-    void toString(std::string& s) const
+    void to_string(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -150,12 +150,12 @@ public:
 
     // See "date Time Input/Output" in boost documentation for a detailed description of various formats
     local_date_time& fromString(const std::string& value, const std::string& format = "");
-    void toString(std::string& s, const char* format) const;
+    void to_string(std::string& s, const char* format) const;
 
     friend std::ostream& operator<<(std::ostream& os, const local_date_time& value)
     {
         std::string s;
-        value.toString(s);
+        value.to_string(s);
         return os << s;
     }
 };
@@ -267,12 +267,12 @@ local_date_time::fromString(const std::string& value, const std::string& format 
     return *this;
 }
 
-void local_date_time::toString(std::string& s, const char* format) const
+void local_date_time::to_string(std::string& s, const char* format) const
 {
     using namespace boost::posix_time;
 
     if (NULL == format || 0 == *format) {
-        return toString(s);
+        return to_string(s);
     }
 
     try {

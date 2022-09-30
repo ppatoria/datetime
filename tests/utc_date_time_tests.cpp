@@ -7,9 +7,9 @@
 
 TEST_CASE("test", "[test]")
 {
-    auto now_utc = dt::utc_date_time::now().toString();
+    auto now_utc = dt::utc_date_time::now().to_string();
     std::cout << now_utc << std::endl;
 
-    auto now_local = dt::local_date_time::now().toString();
+    auto now_local = dt::local_date_time::now().to_string();
     std::cout << now_local << std::endl;
 }
