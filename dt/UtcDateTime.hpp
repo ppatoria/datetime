@@ -8,50 +8,50 @@ namespace dt {
 using namespace boost::gregorian;
 using namespace boost::posix_time;
 
-class UtcDateTime : public ptime {
+class utc_date_time : public ptime {
 public:
-    typedef ptime DataType;
+    using DataType = ptime;
 
-    UtcDateTime()
+    utc_date_time()
         : DataType()
     {
     }
 
-    UtcDateTime(const DataType& value)
+    utc_date_time(const DataType& value)
         : DataType(value)
     {
     }
 
-    UtcDateTime(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+    utc_date_time(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
         : DataType(date, time)
     {
     }
 
-    UtcDateTime(const Long& value)
+    utc_date_time(const Long& value)
         : DataType(time_rep_type(value))
     {
     }
 
-    UtcDateTime(const boost::local_time::local_date_time& value)
+    utc_date_time(const boost::local_time::local_date_time& value)
         : DataType(value.utc_time())
     {
     }
 
-    UtcDateTime& operator=(const DataType& value)
+    utc_date_time& operator=(const DataType& value)
     {
         DataType::operator=(value);
         return *this;
     }
 
-    UtcDateTime& operator=(const dt::date& value)
+    utc_date_time& operator=(const dt::date& value)
     {
-        *this = UtcDateTime(value);
+        *this = utc_date_time(value);
         return *this;
     }
 
-    UtcDateTime& operator=(const boost::local_time::local_date_time& value)
+    utc_date_time& operator=(const boost::local_time::local_date_time& value)
     {
-        *this = UtcDateTime(value);
+        *this = utc_date_time(value);
         return *this;
     }
 
@@ -67,7 +67,7 @@ public:
 
     void clear()
     {
-        *this = UtcDateTime();
+        *this = utc_date_time();
     }
 
     bool empty() const
@@ -93,7 +93,7 @@ public:
         return time_of_day();
     }
 
-    static UtcDateTime now()
+    static utc_date_time now()
     {
 #ifdef SIMULATION
 
@@ -104,7 +104,7 @@ public:
         return microsec_clock::universal_time();
     }
 
-    static UtcDateTime epoch()
+    static utc_date_time epoch()
     {
         static const DataType _epoch(boost::posix_time::from_time_t(0));
         return _epoch;
@@ -160,41 +160,41 @@ public:
     }
 
     // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-    UtcDateTime& fromString(const String& value, const String& format = "");
+    utc_date_time& fromString(const String& value, const String& format = "");
     void toString(String& s, const char* format) const;
 
-    friend std::ostream& operator<<(std::ostream& os, const UtcDateTime& value)
+    friend std::ostream& operator<<(std::ostream& os, const utc_date_time& value)
     {
         return os << value.toString();
     }
 
 #ifdef SIMULATION
 
-    static void setSimulationTime(const UtcDateTime& simTime)
+    static void setSimulationTime(const utc_date_time& simTime)
     {
         _simulationTime = simTime;
         _simulationTimeInitialized = true;
     }
 
 private:
-    static UtcDateTime _simulationTime;
+    static utc_date_time _simulationTime;
     static bool _simulationTimeInitialized;
 
 #endif
 };
 #ifdef SIMULATION
 
-UtcDateTime UtcDateTime::_simulationTime = UtcDateTime();
-bool UtcDateTime::_simulationTimeInitialized = false;
+utc_date_time utc_date_time::_simulationTime = utc_date_time();
+bool utc_date_time::_simulationTimeInitialized = false;
 
 #endif
 
-static_assert(std::is_trivially_copyable<UtcDateTime::DataType>::value, "Oops, why UtcDateTime::DataType is not trivially copyable?!");
-static_assert(std::is_trivially_copyable<UtcDateTime>::value, "Oops, why UtcDateTime is not trivially copyable?!");
+static_assert(std::is_trivially_copyable<utc_date_time::DataType>::value, "Oops, why utc_date_time::DataType is not trivially copyable?!");
+static_assert(std::is_trivially_copyable<utc_date_time>::value, "Oops, why utc_date_time is not trivially copyable?!");
 
 // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-UtcDateTime&
-UtcDateTime::fromString(const String& value, const String& format /* = "" */)
+utc_date_time&
+utc_date_time::fromString(const String& value, const String& format /* = "" */)
 {
     using namespace boost::gregorian;
     using namespace boost::posix_time;
@@ -224,7 +224,7 @@ UtcDateTime::fromString(const String& value, const String& format /* = "" */)
                  // FRAMEWORK_THROW
                  // (
                  //     ConversionException,
-                 //     "Failed to parse <" << value << "> as UtcDateTime "
+                 //     "Failed to parse <" << value << "> as utc_date_time "
                  //     "using format <" << format << "> "
                  //     "with error <" << e.what () << ">"
                  // );
@@ -234,7 +234,7 @@ UtcDateTime::fromString(const String& value, const String& format /* = "" */)
     return *this;
 }
 
-void UtcDateTime::toString(String& s, const char* format) const
+void utc_date_time::toString(String& s, const char* format) const
 {
     using namespace boost::posix_time;
 

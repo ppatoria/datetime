@@ -43,7 +43,7 @@ public:
     {
     }
 
-    local_date_time(const UtcDateTime& value)
+    local_date_time(const utc_date_time& value)
         : DataType(value, timezone())
     {
     }
@@ -64,7 +64,7 @@ public:
         return *this;
     }
 
-    local_date_time& operator=(const UtcDateTime& value)
+    local_date_time& operator=(const utc_date_time& value)
     {
         *this = local_date_time(value);
         return *this;
@@ -110,7 +110,7 @@ public:
 
     static local_date_time now()
     {
-        return UtcDateTime::now();
+        return utc_date_time::now();
     }
 
     static dt::date today()
@@ -118,9 +118,9 @@ public:
         return now().date();
     }
 
-    operator UtcDateTime() const
+    operator utc_date_time() const
     {
-        return UtcDateTime(*this);
+        return utc_date_time(*this);
     }
 
     String toString() const
@@ -256,7 +256,7 @@ void local_date_time::timezone(const std::string& spec)
 local_date_time&
 local_date_time::fromString(const String& value, const String& format /* = "" */)
 {
-    UtcDateTime dt;
+    utc_date_time dt;
     dt.fromString(value, format);
 
     if (dt.empty()) {

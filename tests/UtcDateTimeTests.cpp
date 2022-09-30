@@ -4,7 +4,7 @@
 
 int main()
 {
-    auto now_utc = dt::UtcDateTime::now().toString();
+    auto now_utc = dt::utc_date_time::now().toString();
     std::cout << now_utc << std::endl;
 
     auto now_local = dt::local_date_time::now().toString();
