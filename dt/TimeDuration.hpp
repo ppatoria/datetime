@@ -23,20 +23,17 @@ For more info visit "https://svn.boost.org/trac/boost/ticket/3471"
 #endif
 #endif
 
-using namespace boost::posix_time;
-
 namespace dt {
-class TimeDuration : public time_duration {
+class TimeDuration : public boost::posix_time::time_duration {
 public:
-    typedef time_duration DataType;
-
-    typedef DataType::hour_type HourType;
-    typedef DataType::min_type MinuteType;
-    typedef DataType::sec_type SecondType;
-    typedef DataType::fractional_seconds_type MicroSecondType;
+    using DataType = boost::posix_time::time_duration;
+    using HourType = DataType::hour_type;
+    using MinuteType = DataType::min_type;
+    using SecondType = DataType::sec_type;
+    using MicroSecondType = DataType::fractional_seconds_type;
 
     TimeDuration()
-        : DataType(not_a_date_time)
+        : DataType(boost::posix_time::not_a_date_time)
     {
     }
 
