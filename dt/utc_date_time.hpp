@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
-#include <dt/TimeDuration.hpp>
 #include <dt/date.hpp>
+#include <dt/time_duration.hpp>
 
 namespace dt {
 using namespace boost::gregorian;
