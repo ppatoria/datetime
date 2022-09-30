@@ -10,8 +10,8 @@ using namespace boost::local_time;
 
 class LocalDateTime : public local_date_time {
 public:
-    typedef local_date_time DataType;
-    typedef boost::local_time::time_zone_ptr time_zone_ptr;
+    using DataType = boost::local_time::local_date_time;
+    using time_zone_ptr = boost::local_time::time_zone_ptr;
 
     /// Access the local time zone
     static time_zone_ptr defaultTimeZone();
