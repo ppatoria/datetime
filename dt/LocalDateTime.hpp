@@ -48,7 +48,7 @@ public:
     {
     }
 
-    local_date_time(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+    local_date_time(const dt::date& date, const dt::time_duration& time = time_duration(0, 0, 0))
         : DataType(date, time, timezone(), EXCEPTION_ON_ERROR)
     {
     }
@@ -99,10 +99,10 @@ public:
         return local_time().date();
     }
 
-    TimeDuration time() const
+    dt::time_duration time() const
     {
         if (empty()) {
-            return TimeDuration();
+            return dt::time_duration();
         }
 
         return local_time().time_of_day();

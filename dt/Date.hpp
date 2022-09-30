@@ -2,13 +2,13 @@
 
 // #include <String.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
-#include <dt/TypeTraits.hpp>
+//#include <dt/TypeTraits.hpp>
 #include <string>
 
 namespace dt {
 
 using namespace boost::gregorian;
-using String = std::string;
+// using String = std::string;
 
 class date : public boost::gregorian::date {
 public:

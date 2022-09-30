@@ -22,7 +22,7 @@ public:
     {
     }
 
-    utc_date_time(const dt::date& date, const TimeDuration& time = TimeDuration(0, 0, 0))
+    utc_date_time(const dt::date& date, const dt::time_duration& time = dt::time_duration(0, 0, 0))
         : DataType(date, time)
     {
     }
@@ -84,10 +84,10 @@ public:
         return DataType::date();
     }
 
-    TimeDuration time() const
+    dt::time_duration time() const
     {
         if (empty()) {
-            return TimeDuration();
+            return dt::time_duration();
         }
 
         return time_of_day();
@@ -127,10 +127,11 @@ public:
 
     operator std::chrono::system_clock::time_point() const
     {
-        TimeDuration t = value() - epoch();
+        dt::time_duration t = value() - epoch();
 
-        return std::chrono::system_clock::time_point(
-            std::chrono::duration_cast<std::chrono::system_clock::time_point::duration>(static_cast<std::chrono::microseconds>(t)));
+        using chrono_duration = std::chrono::system_clock::time_point::duration;
+
+        return std::chrono::system_clock::time_point(std::chrono::duration_cast<chrono_duration>(static_cast<std::chrono::microseconds>(t)));
     }
 
     String toString() const

@@ -24,7 +24,7 @@ For more info visit "https://svn.boost.org/trac/boost/ticket/3471"
 #endif
 
 namespace dt {
-class TimeDuration : public boost::posix_time::time_duration {
+class time_duration : public boost::posix_time::time_duration {
 public:
     using DataType = boost::posix_time::time_duration;
     using HourType = DataType::hour_type;
@@ -32,23 +32,23 @@ public:
     using SecondType = DataType::sec_type;
     using MicroSecondType = DataType::fractional_seconds_type;
 
-    TimeDuration()
+    time_duration()
         : DataType(boost::posix_time::not_a_date_time)
     {
     }
 
-    TimeDuration(const DataType& value)
+    time_duration(const DataType& value)
         : DataType(value)
     {
     }
 
-    TimeDuration(HourType hour, MinuteType minute, SecondType second, MicroSecondType microsecond = 0)
+    time_duration(HourType hour, MinuteType minute, SecondType second, MicroSecondType microsecond = 0)
         : DataType(hour, minute, second)
     {
         *this += boost::posix_time::microseconds(microsecond);
     }
 
-    TimeDuration& operator=(const DataType& value)
+    time_duration& operator=(const DataType& value)
     {
         DataType::operator=(value);
         return *this;
@@ -71,7 +71,7 @@ public:
 
     void clear()
     {
-        *this = TimeDuration();
+        *this = time_duration();
     }
 
     size_t microseconds() const
@@ -144,34 +144,34 @@ public:
         return s;
     }
 
-    TimeDuration& fromString(const String& value);
+    time_duration& fromString(const String& value);
 
-    static TimeDuration fromMicroseconds(MicroSecondType value)
+    static time_duration fromMicroseconds(MicroSecondType value)
     {
-        return TimeDuration(0, 0, 0, value);
+        return time_duration(0, 0, 0, value);
     }
 
-    static TimeDuration fromMilliseconds(MicroSecondType value)
+    static time_duration fromMilliseconds(MicroSecondType value)
     {
         return fromMicroseconds(1000 * value);
     }
 
-    static TimeDuration fromSeconds(SecondType value)
+    static time_duration fromSeconds(SecondType value)
     {
-        return TimeDuration(0, 0, value);
+        return time_duration(0, 0, value);
     }
 
-    static TimeDuration fromMinutes(MinuteType value)
+    static time_duration fromMinutes(MinuteType value)
     {
-        return TimeDuration(0, value, 0);
+        return time_duration(0, value, 0);
     }
 
-    static TimeDuration fromHours(HourType value)
+    static time_duration fromHours(HourType value)
     {
-        return TimeDuration(value, 0, 0);
+        return time_duration(value, 0, 0);
     }
 
-    friend std::ostream& operator<<(std::ostream& os, const TimeDuration& value)
+    friend std::ostream& operator<<(std::ostream& os, const time_duration& value)
     {
         return os << value.toString();
     }
