@@ -1,14 +1,11 @@
 #pragma once
 
-// #include <String.h>
 #include <boost/date_time/gregorian/gregorian.hpp>
-//#include <dt/TypeTraits.hpp>
 #include <string>
 
 namespace dt {
 
 using namespace boost::gregorian;
-// using String = std::string;
 
 class date : public boost::gregorian::date {
 public:
@@ -64,23 +61,23 @@ public:
 
     DayType day() const { return DataType::day(); }
 
-    String toString() const
+    std::string toString() const
     {
-        String s;
+        std::string s;
         toString(s);
 
         return s;
     }
 
-    String toString(const char* format) const
+    std::string toString(const char* format) const
     {
-        String s;
+        std::string s;
         toString(s, format);
 
         return s;
     }
 
-    void toString(String& s) const
+    void toString(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -94,12 +91,12 @@ public:
     // description of various formats
     date& fromString(const char* value, const char* format = "");
 
-    date& fromString(const String& s, const char* format = "")
+    date& fromString(const std::string& s, const char* format = "")
     {
         return fromString(s.c_str(), format);
     }
 
-    void toString(String& s, const char* format) const;
+    void toString(std::string& s, const char* format) const;
 
     friend std::ostream& operator<<(std::ostream& os, const date& value)
     {

@@ -2,10 +2,6 @@
 
 #pragma once
 
-#include <dt/Long.hpp>
-// #include <Exception.h>
-#include <dt/TypeTraits.hpp>
-
 #include <boost/date_time/local_time/local_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/version.hpp>
@@ -77,7 +73,7 @@ public:
     size_t microseconds() const
     {
         if (empty()) {
-            return static_cast<long>(Long());
+            return static_cast<long>(long());
         }
 
         return static_cast<long>(
@@ -87,35 +83,35 @@ public:
     size_t milliseconds() const
     {
         if (empty()) {
-            return static_cast<long>(Long());
+            return static_cast<long>(long());
         }
 
         return static_cast<long>(
             fractional_seconds() * 1000 / ticks_per_second());
     }
 
-    Long totalMicroseconds() const
+    long totalMicroseconds() const
     {
         if (empty()) {
-            return Long();
+            return long();
         }
 
-        return Long(total_microseconds());
+        return long(total_microseconds());
     }
 
-    Long totalMilliseconds() const
+    long totalMilliseconds() const
     {
         if (empty()) {
-            return Long();
+            return long();
         }
 
-        return Long(total_milliseconds());
+        return long(total_milliseconds());
     }
 
     size_t totalSeconds() const
     {
         if (empty()) {
-            return static_cast<long>(Long());
+            return static_cast<long>(long());
         }
 
         return total_seconds();
@@ -126,7 +122,7 @@ public:
         return std::chrono::microseconds(total_microseconds());
     }
 
-    void toString(String& s) const
+    void toString(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -136,16 +132,15 @@ public:
         s = to_simple_string(*this);
     }
 
-    String toString() const
+    std::string toString() const
     {
-        String s;
+        std::string s;
         toString(s);
 
         return s;
     }
 
-    time_duration& fromString(const String& value);
-
+    time_duration& fromString(const std::string& value);
     static time_duration fromMicroseconds(MicroSecondType value)
     {
         return time_duration(0, 0, 0, value);

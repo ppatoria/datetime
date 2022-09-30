@@ -2,7 +2,6 @@
 #include <chrono>
 #include <dt/TimeDuration.hpp>
 #include <dt/date.hpp>
-//#include "TypeTraits.h"
 
 namespace dt {
 using namespace boost::gregorian;
@@ -27,7 +26,7 @@ public:
     {
     }
 
-    utc_date_time(const Long& value)
+    utc_date_time(const long& value)
         : DataType(time_rep_type(value))
     {
     }
@@ -115,10 +114,10 @@ public:
         return now().date();
     }
 
-    operator Long() const
+    operator long() const
     {
         if (empty()) {
-            return Long();
+            return long();
         }
 
         // Extract internal time respresentation in date_time::base_time<ptime, posix_time_system>
@@ -134,23 +133,23 @@ public:
         return std::chrono::system_clock::time_point(std::chrono::duration_cast<chrono_duration>(static_cast<std::chrono::microseconds>(t)));
     }
 
-    String toString() const
+    std::string toString() const
     {
-        String s;
+        std::string s;
         toString(s);
 
         return s;
     }
 
-    String toString(const char* format) const
+    std::string toString(const char* format) const
     {
-        String s;
+        std::string s;
         toString(s, format);
 
         return s;
     }
 
-    void toString(String& s) const
+    void toString(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -161,8 +160,8 @@ public:
     }
 
     // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-    utc_date_time& fromString(const String& value, const String& format = "");
-    void toString(String& s, const char* format) const;
+    utc_date_time& fromString(const std::string& value, const std::string& format = "");
+    void toString(std::string& s, const char* format) const;
 
     friend std::ostream& operator<<(std::ostream& os, const utc_date_time& value)
     {
@@ -195,7 +194,7 @@ static_assert(std::is_trivially_copyable<utc_date_time>::value, "Oops, why utc_d
 
 // See "date Time Input/Output" in boost documentation for a detailed description of various formats
 utc_date_time&
-utc_date_time::fromString(const String& value, const String& format /* = "" */)
+utc_date_time::fromString(const std::string& value, const std::string& format /* = "" */)
 {
     using namespace boost::gregorian;
     using namespace boost::posix_time;
@@ -235,7 +234,7 @@ utc_date_time::fromString(const String& value, const String& format /* = "" */)
     return *this;
 }
 
-void utc_date_time::toString(String& s, const char* format) const
+void utc_date_time::toString(std::string& s, const char* format) const
 {
     using namespace boost::posix_time;
 

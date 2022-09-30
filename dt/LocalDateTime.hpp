@@ -1,6 +1,5 @@
 #pragma once
 
-#include "TypeTraits.hpp"
 #include "UtcDateTime.hpp"
 
 namespace dt {
@@ -123,23 +122,23 @@ public:
         return utc_date_time(*this);
     }
 
-    String toString() const
+    std::string toString() const
     {
-        String s;
+        std::string s;
         toString(s);
 
         return s;
     }
 
-    String toString(const char* format) const
+    std::string toString(const char* format) const
     {
-        String s;
+        std::string s;
         toString(s, format);
 
         return s;
     }
 
-    void toString(String& s) const
+    void toString(std::string& s) const
     {
         if (empty()) {
             s.clear();
@@ -150,12 +149,12 @@ public:
     }
 
     // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-    local_date_time& fromString(const String& value, const String& format = "");
-    void toString(String& s, const char* format) const;
+    local_date_time& fromString(const std::string& value, const std::string& format = "");
+    void toString(std::string& s, const char* format) const;
 
     friend std::ostream& operator<<(std::ostream& os, const local_date_time& value)
     {
-        String s;
+        std::string s;
         value.toString(s);
         return os << s;
     }
@@ -254,7 +253,7 @@ void local_date_time::timezone(const std::string& spec)
 
 // See "date Time Input/Output" in boost documentation for a detailed description of various formats
 local_date_time&
-local_date_time::fromString(const String& value, const String& format /* = "" */)
+local_date_time::fromString(const std::string& value, const std::string& format /* = "" */)
 {
     utc_date_time dt;
     dt.fromString(value, format);
@@ -268,7 +267,7 @@ local_date_time::fromString(const String& value, const String& format /* = "" */
     return *this;
 }
 
-void local_date_time::toString(String& s, const char* format) const
+void local_date_time::toString(std::string& s, const char* format) const
 {
     using namespace boost::posix_time;
 
