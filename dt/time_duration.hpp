@@ -1,8 +1,5 @@
-#pragma
-
 #pragma once
 
-#include <boost/date_time/local_time/local_time.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/version.hpp>
 
@@ -19,44 +16,51 @@ For more info visit "https://svn.boost.org/trac/boost/ticket/3471"
 #endif
 #endif
 
+using posix_time_duration = boost::posix_time::time_duration;
+using posix_time_microseconds = boost::posix_time::microseconds;
+
 namespace dt {
-class time_duration : public boost::posix_time::time_duration {
+class time_duration : public posix_time_duration {
+private:
+    const posix_time_duration& value() const { return *this; }
+
+    posix_time_duration& value() { return *this; }
+
+    void to_string(std::string& s) const
+    {
+        if (empty()) {
+            s.clear();
+            return;
+        }
+        s = to_simple_string(*this);
+    }
+
 public:
-    using DataType = boost::posix_time::time_duration;
-    using HourType = DataType::hour_type;
-    using MinuteType = DataType::min_type;
-    using SecondType = DataType::sec_type;
-    using MicroSecondType = DataType::fractional_seconds_type;
+    using hour_type = posix_time_duration::hour_type;
+    using minute_type = posix_time_duration::min_type;
+    using second_type = posix_time_duration::sec_type;
+    using micro_second_type = posix_time_duration::fractional_seconds_type;
 
     time_duration()
-        : DataType(boost::posix_time::not_a_date_time)
+        : posix_time_duration(boost::posix_time::not_a_date_time)
     {
     }
 
-    time_duration(const DataType& value)
-        : DataType(value)
+    time_duration(const posix_time_duration& value)
+        : posix_time_duration(value)
     {
     }
 
-    time_duration(HourType hour, MinuteType minute, SecondType second, MicroSecondType microsecond = 0)
-        : DataType(hour, minute, second)
+    time_duration(hour_type hour, minute_type minute, second_type second,
+        micro_second_type microsecond = 0)
+        : posix_time_duration(hour, minute, second)
     {
-        *this += boost::posix_time::microseconds(microsecond);
+        *this += posix_time_microseconds(microsecond);
     }
 
-    time_duration& operator=(const DataType& value)
+    time_duration& operator=(const posix_time_duration& value)
     {
-        DataType::operator=(value);
-        return *this;
-    }
-
-    const DataType& value() const
-    {
-        return *this;
-    }
-
-    DataType& value()
-    {
+        posix_time_duration::operator=(value);
         return *this;
     }
 
@@ -122,16 +126,6 @@ public:
         return std::chrono::microseconds(total_microseconds());
     }
 
-    void to_string(std::string& s) const
-    {
-        if (empty()) {
-            s.clear();
-            return;
-        }
-
-        s = to_simple_string(*this);
-    }
-
     std::string to_string() const
     {
         std::string s;
@@ -140,28 +134,28 @@ public:
         return s;
     }
 
-    time_duration& fromString(const std::string& value);
-    static time_duration fromMicroseconds(MicroSecondType value)
+    time_duration& from_string(const std::string& value);
+    static time_duration from_microseconds(micro_second_type value)
     {
         return time_duration(0, 0, 0, value);
     }
 
-    static time_duration fromMilliseconds(MicroSecondType value)
+    static time_duration from_milliseconds(micro_second_type value)
     {
-        return fromMicroseconds(1000 * value);
+        return from_microseconds(1000 * value);
     }
 
-    static time_duration fromSeconds(SecondType value)
+    static time_duration from_seconds(second_type value)
     {
         return time_duration(0, 0, value);
     }
 
-    static time_duration fromMinutes(MinuteType value)
+    static time_duration from_minutes(minute_type value)
     {
         return time_duration(0, value, 0);
     }
 
-    static time_duration fromHours(HourType value)
+    static time_duration from_hours(hour_type value)
     {
         return time_duration(value, 0, 0);
     }

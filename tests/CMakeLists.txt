@@ -11,6 +11,7 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable( tests
   date_tests.cpp
+  time_duration_tests.cpp
   utc_date_time_tests.cpp
   )
 
@@ -22,7 +23,7 @@ find_package(Boost REQUIRED)
 message(STATUS "Boost version: ${Boost_VERSION}")
 target_include_directories(tests PUBLIC
   "${CMAKE_SOURCE_DIR}/.."
-  ${Boost_INCLUDE_DIR}  
+  ${Boost_INCLUDE_DIR}
   )
 
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
