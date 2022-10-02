@@ -1,14 +1,21 @@
+#pragma once
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <functional>
 
 namespace dt {
-namespace string {
-    inline auto to_double = std::bind(boost::lexical_cast<double, std::string>,
-        std::placeholders::_1);
+namespace string_util {
 
-    inline auto to_lower_copy_of = std::bind(boost::algorithm::to_lower_copy<std::string>,
-        std::placeholders::_1, std::locale());
-}
-}
+    template <typename T>
+    inline T to(const std::string& str)
+    {
+        return boost::lexical_cast<T>(str);
+    }
+
+    inline std::string to_lower_copy(const std::string& str)
+    {
+        return boost::algorithm::to_lower_copy(str);
+    }
+} // namespace string_util
+} // namespace dt

@@ -3,9 +3,6 @@
 #include "utc_date_time.hpp"
 
 namespace dt {
-using namespace boost::gregorian;
-using namespace boost::posix_time;
-using namespace boost::local_time;
 
 class local_date_time : public boost::local_time::local_date_time {
 public:
@@ -247,7 +244,7 @@ void local_date_time::timezone(const local_date_time::time_zone_ptr& timeZone)
 /// Set the local time zone from a POSIX time zone specification
 void local_date_time::timezone(const std::string& spec)
 {
-    time_zone_ptr zone(new posix_time_zone(spec));
+    time_zone_ptr zone(new boost::local_time::posix_time_zone(spec));
     timezone(zone);
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/date_time/gregorian/gregorian.hpp>
+
 #include <stdexcept>
 #include <string>
 
@@ -84,8 +85,6 @@ public:
         gregorian_date::operator=(value);
         return *this;
     }
-
-    operator const gregorian_date&() const { return *this; }
 
     void clear() { *this = date(); }
 

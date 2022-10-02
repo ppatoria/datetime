@@ -1,16 +1,6 @@
 #pragma once
 
-#include <boost/algorithm/string/case_conv.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/date_time/local_time/posix_time_zone.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/version.hpp>
-
-#include <chrono>
-#include <stdexcept>
-
-#include <dt/string_util.hpp>
-
 #if (BOOST_VERSION < 105200)
 #ifndef BOOST_SUBSECOND_DURATION_OVERFLOW_BUG_FIX_APPLIED
 #error Using boost (BOOST_VERSION) \
@@ -21,6 +11,14 @@ Modify the original line (correct the multiplication order): "base_duration(0,0,
 For more info visit "https://svn.boost.org/trac/boost/ticket/3471"
 #endif
 #endif
+
+#include <boost/date_time/local_time/posix_time_zone.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <chrono>
+#include <stdexcept>
+
+#include <dt/string_util.hpp>
 
 using posix_time_duration = boost::posix_time::time_duration;
 using posix_time_microseconds = boost::posix_time::microseconds;
@@ -143,6 +141,7 @@ public:
     time_duration& from_string(const std::string& arg_value)
     {
         using namespace boost::algorithm;
+        using namespace dt::string_util;
 
         if (arg_value.empty() || "not-a-date-time" == arg_value) {
             clear();
@@ -150,7 +149,7 @@ public:
             return *this;
         }
 
-        std::string value = dt::string::to_lower_copy_of(std::cref(arg_value));
+        std::string value = to_lower_copy(arg_value);
 
         std::string units;
         long usecFactor = 0;
@@ -192,7 +191,7 @@ public:
 
         if (0 != usecFactor) {
             auto str_val = value.substr(0, value.size() - units.size());
-            double d = dt::string::to_double(std::cref(str_val));
+            double d = to<double>(str_val);
 
             *this = from_microseconds(
                 static_cast<time_duration::micro_second_type>(d * usecFactor));
