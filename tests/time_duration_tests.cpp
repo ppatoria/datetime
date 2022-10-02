@@ -21,9 +21,12 @@ TEST_CASE("time_duration", "[misc]")
     td1.clear();
     REQUIRE(td1.empty() == true);
 
-    dt::time_duration td4(0, 0, 1);
-    REQUIRE(td4.milliseconds() == 1000);
-
     dt::time_duration td5(0, 0, 0, 1);
     REQUIRE(td5.microseconds() == 1);
+}
+
+TEST_CASE("time_duration", "[ms]")
+{
+    dt::time_duration td4(0, 0, 1);
+    REQUIRE(td4.total_milliseconds() == 1000);
 }
