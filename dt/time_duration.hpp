@@ -1,16 +1,15 @@
 #pragma once
 
-#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/date_time/local_time/posix_time_zone.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/lexical_cast.hpp>
 #include <boost/version.hpp>
 
 #include <chrono>
-#include <functional>
 #include <stdexcept>
+
+#include <dt/string_util.hpp>
 
 #if (BOOST_VERSION < 105200)
 #ifndef BOOST_SUBSECOND_DURATION_OVERFLOW_BUG_FIX_APPLIED
@@ -143,18 +142,18 @@ public:
 
     time_duration& from_string(const std::string& arg_value)
     {
+        using namespace boost::algorithm;
+
         if (arg_value.empty() || "not-a-date-time" == arg_value) {
             clear();
 
             return *this;
         }
 
-        std::string value = boost::algorithm::to_lower_copy(arg_value);
+        std::string value = dt::string::to_lower_copy_of(std::cref(arg_value));
 
         std::string units;
         long usecFactor = 0;
-
-        using namespace boost::algorithm;
 
         if (ends_with(value, "usec")) {
             units = "usec";
@@ -192,8 +191,8 @@ public:
         }
 
         if (0 != usecFactor) {
-            double d = boost::lexical_cast<double>(
-                value.substr(0, value.size() - units.size()));
+            auto str_val = value.substr(0, value.size() - units.size());
+            double d = dt::string::to_double(std::cref(str_val));
 
             *this = from_microseconds(
                 static_cast<time_duration::micro_second_type>(d * usecFactor));
