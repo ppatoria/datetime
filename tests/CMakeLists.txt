@@ -29,6 +29,7 @@ FetchContent_MakeAvailable(Catch2)
 add_executable( tests
   date_tests.cpp
   time_duration_tests.cpp
+  local_date_time_tests.cpp
   utc_date_time_tests.cpp
   )
 

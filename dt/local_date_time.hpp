@@ -11,7 +11,7 @@ public:
     using boost_local_date_time = boost::local_time::local_date_time;
 
     local_date_time()
-        : boost_local_date_time(not_a_date_time)
+        : boost_local_date_time(boost::date_time::not_a_date_time)
     {
     }
 
@@ -35,6 +35,21 @@ public:
             time_zone().local(),
             EXCEPTION_ON_ERROR)
     {
+    }
+
+    bool is_daylight_saving()
+    {
+        return dt::time_zone_info::is_daylight_saving();
+    }
+
+    dt::time_zone_info::time_zone_name tz_name()
+    {
+        return dt::time_zone_info::tz_name();
+    }
+
+    auto tz_difference_from_utc()
+    {
+        return dt::time_zone_info::tz_difference_from_utc();
     }
 
     local_date_time&
@@ -150,7 +165,7 @@ public:
         const std::string& format = "")
     {
         utc_date_time dt;
-        dt.fromString(value, format);
+        dt.from_string(value, format);
 
         if (dt.empty()) {
             clear();

@@ -10,63 +10,68 @@
 namespace dt {
 
 /**
- * This variable has a nonzero value if Daylight Saving Time rules apply.
- * A nonzero value does not neccessarily mean that Daylight Saving Time is now
- * in effect; it means only that Daylight Saving Time is sometimes in effect.
+ * https : //www.gnu.org/software/libc/manual/html_node/Time-Zone-Functions.html
  */
-auto is_daylight_saving() -> decltype(::daylight)
-{
+namespace time_zone_info {
+
+    /**
+     * This variable has a nonzero value if Daylight Saving Time rules
+     * apply. A nonzero value does not neccessarily mean that Daylight
+     * Saving Time is now in effect; it means only that Daylight Saving
+     * Time is sometimes in effect.
+     */
+    inline auto is_daylight_saving() -> decltype(::daylight)
+    {
 #ifdef DAYLIGHT
-    return DAYLIGHT;
+        return DAYLIGHT;
 #else
-    return ::daylight;
+        return ::daylight;
 #endif
-}
+    }
 
-/**
- * The array tzname contains two strings, which are the standard names of the pair
- * of time zones (standard and Daylight Saving) that the user has selected.
- * tzname[0] is the name of the standard time zone (for example, "EST"), and
- * tzname[1] is the name for the time zone when Daylight Saving Time is in use (for
- * example, "EDT"). These correspond to the std and dst strings (respectively) from
- * the TZ environment variable. If Daylight Saving Time is never used, tzname[1] is
- * the empty string.
- * The tzname array is initialized from the TZ environment variable whenever tzset,
- * ctime, strftime, mktime, or localtime is called. If multiple abbreviations have
- * been used (e.g. "EWT" and "EDT" for U.S. Eastern War Time and Eastern Daylight
- * Time), the array contains the most recent abbreviation.
- */
-struct name {
-    const char* standard_time_zone;
-    const char* daylight_time_zone;
-};
+    /**
+     * The array tzname contains two strings, which are the standard names of the pair
+     * of time zones (standard and Daylight Saving) that the user has selected.
+     * tzname[0] is the name of the standard time zone (for example, "EST"), and
+     * tzname[1] is the name for the time zone when Daylight Saving Time is in use (for
+     * example, "EDT"). These correspond to the std and dst strings (respectively) from
+     * the TZ environment variable. If Daylight Saving Time is never used, tzname[1] is
+     * the empty string.
+     * The tzname array is initialized from the TZ environment variable whenever tzset,
+     * ctime, strftime, mktime, or localtime is called. If multiple abbreviations have
+     * been used (e.g. "EWT" and "EDT" for U.S. Eastern War Time and Eastern Daylight
+     * Time), the array contains the most recent abbreviation.
+     */
+    struct time_zone_name {
+        const char* standard_time_zone;
+        const char* daylight_time_zone;
+    };
 
-name tz_name()
-{
+    inline time_zone_name tz_name()
+    {
 #ifdef TZNAME
-    return name { TZNAME[0], TZNAME[1] };
+        return time_zone_name { TZNAME[0], TZNAME[1] };
 #else
-    return name { ::tzname[0], ::tzname[1] };
+        return time_zone_name { ::tzname[0], ::tzname[1] };
 #endif
-}
+    }
 
-/**
- * This contains the difference between UTC and the latest local standard
- * time, in seconds west of UTC. For example, in the U.S.Eastern time zone,
- * the value is 5*60*60.
- */
-auto tz_difference_from_utc() -> decltype(::timezone)
-{
+    /**
+     * This contains the difference between UTC and the latest local standard
+     * time, in seconds west of UTC. For example, in the U.S.Eastern time zone,
+     * the value is 5*60*60.
+     */
+    inline auto tz_difference_from_utc() -> decltype(::timezone)
+    {
 #ifdef TIMEZONE
-    return TIMEZONE;
+        return TIMEZONE;
 #else
-    return ::timezone;
+        return ::timezone;
 #endif
-}
-
+    }
+} // namespace tz_info
 /**
-https://www.gnu.org/software/libc/manual/html_node/Time-Zone-Functions.html
-*/
+ */
 class time_zone {
     using time_zone_ptr = boost::local_time::time_zone_ptr;
 
@@ -89,9 +94,9 @@ private:
 
         std::ostringstream os;
 
-        auto tzname = tz_name();
+        auto tzname = time_zone_info::tz_name();
 
-        int hours = (-1 * tz_difference_from_utc()) / 3600;
+        int hours = (-1 * time_zone_info::tz_difference_from_utc()) / 3600;
 
         os << fix_tz_name(tzname.standard_time_zone);
 
@@ -108,7 +113,7 @@ private:
 
         os << std::setw(2) << std::setfill('0') << hours;
 
-        if (is_daylight_saving()) {
+        if (time_zone_info::is_daylight_saving()) {
             os << fix_tz_name(tzname.daylight_time_zone) << ",M3.2.0,M11.1.0";
         }
 

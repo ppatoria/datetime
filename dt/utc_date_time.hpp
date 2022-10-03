@@ -1,45 +1,49 @@
 #pragma once
-#include <boost/date_time/local_time/local_time.hpp>
-#include <chrono>
+
 #include <dt/date.hpp>
 #include <dt/time_duration.hpp>
+#include <dt/time_zone.hpp>
+#include <stdexcept>
 
 namespace dt {
-using namespace boost::gregorian;
-using namespace boost::posix_time;
 
-class utc_date_time : public ptime {
+class utc_date_time : public boost::posix_time::ptime {
+private:
+    const boost::posix_time::ptime& value() const { return *this; }
+
+    boost::posix_time::ptime& value() { return *this; }
+
 public:
-    using parent_type = ptime;
-
     utc_date_time()
-        : parent_type()
+        : boost::posix_time::ptime()
     {
     }
 
-    utc_date_time(const parent_type& value)
-        : parent_type(value)
+    utc_date_time(const boost::posix_time::ptime& value)
+        : boost::posix_time::ptime(value)
     {
     }
 
-    utc_date_time(const dt::date& date, const dt::time_duration& time = dt::time_duration(0, 0, 0))
-        : parent_type(date, time)
+    utc_date_time(const dt::date& date,
+        const dt::time_duration& time = dt::time_duration(0, 0, 0))
+        : boost::posix_time::ptime(date, time)
     {
     }
 
     utc_date_time(const long& value)
-        : parent_type(time_rep_type(value))
+        : boost::posix_time::ptime(time_rep_type(value))
     {
     }
 
     utc_date_time(const boost::local_time::local_date_time& value)
-        : parent_type(value.utc_time())
+        : boost::posix_time::ptime(value.utc_time())
     {
     }
 
-    utc_date_time& operator=(const parent_type& value)
+    utc_date_time& operator=(
+        const boost::posix_time::ptime& value)
     {
-        parent_type::operator=(value);
+        boost::posix_time::ptime::operator=(value);
         return *this;
     }
 
@@ -49,19 +53,10 @@ public:
         return *this;
     }
 
-    utc_date_time& operator=(const boost::local_time::local_date_time& value)
+    utc_date_time& operator=(
+        const boost::local_time::local_date_time& value)
     {
         *this = utc_date_time(value);
-        return *this;
-    }
-
-    const parent_type& value() const
-    {
-        return *this;
-    }
-
-    parent_type& value()
-    {
         return *this;
     }
 
@@ -81,7 +76,7 @@ public:
             return date();
         }
 
-        return parent_type::date();
+        return boost::posix_time::ptime::date();
     }
 
     dt::time_duration time() const
@@ -101,12 +96,13 @@ public:
             return _simulationTime;
 #endif
 
-        return microsec_clock::universal_time();
+        return boost::posix_time::microsec_clock::universal_time();
     }
 
     static utc_date_time epoch()
     {
-        static const parent_type _epoch(boost::posix_time::from_time_t(0));
+        static const boost::posix_time::ptime _epoch(
+            boost::posix_time::from_time_t(0));
         return _epoch;
     }
 
@@ -121,7 +117,9 @@ public:
             return long();
         }
 
-        // Extract internal time respresentation in date_time::base_time<ptime, posix_time_system>
+        /** Extract internal time respresentation
+         * in date_time::base_time<ptime, posix_time_system>
+         */
         return time_.time_count();
     }
 
@@ -131,7 +129,9 @@ public:
 
         using chrono_duration = std::chrono::system_clock::time_point::duration;
 
-        return std::chrono::system_clock::time_point(std::chrono::duration_cast<chrono_duration>(static_cast<std::chrono::microseconds>(t)));
+        return std::chrono::system_clock::time_point(
+            std::chrono::duration_cast<chrono_duration>(
+                static_cast<std::chrono::microseconds>(t)));
     }
 
     std::string to_string() const
@@ -160,9 +160,74 @@ public:
         s = to_iso_extended_string(*this);
     }
 
-    // See "date Time Input/Output" in boost documentation for a detailed description of various formats
-    utc_date_time& fromString(const std::string& value, const std::string& format = "");
-    void to_string(std::string& s, const char* format) const;
+    /** See "date Time Input/Output" in boost documentation
+     * for a detailed description of various formats
+     */
+    utc_date_time& from_string(const std::string& value,
+        const std::string& format = "")
+    {
+        using namespace boost::gregorian;
+        using namespace boost::posix_time;
+        using namespace boost::local_time;
+
+        if (value.empty()) {
+            clear();
+            return *this;
+        }
+
+        boost::posix_time::ptime dt;
+        try {
+            time_input_facet facet;
+            if (format.empty()) {
+                facet.set_iso_extended_format();
+            } else {
+                facet.format(format.c_str());
+            }
+
+            std::istringstream s(value);
+            /** throw exception when parsing fails */
+            s.exceptions(std::ios_base::failbit);
+
+            std::istreambuf_iterator<char> i(s), e;
+            facet.get(i, e, s, dt);
+        } catch (const std::out_of_range& e) {
+            throw std::runtime_error(
+                "Failed to parse <" + value + "> as utc_date_time "
+                + "using format <" + format + "> "
+                + "with error <" + e.what() + ">");
+        }
+
+        *this = dt;
+        return *this;
+    }
+
+    void to_string(std::string& s, const char* format) const
+    {
+        using namespace boost::posix_time;
+
+        if (NULL == format || 0 == *format) {
+            return to_string(s);
+        }
+
+        try {
+            time_facet facet;
+            facet.format(format);
+
+            std::ostringstream str;
+            /** throw exception when parsing fails */
+            str.exceptions(std::ios_base::failbit);
+
+            std::ostreambuf_iterator<char> ost(str);
+            facet.put(ost, str, ' ', *this);
+
+            s = str.str();
+        } catch (const std::out_of_range& e) {
+            throw std::runtime_error(
+                "Failed to format <" + to_string() + "> "
+                + "using format <" + format + "> "
+                + "with error <" + e.what() + ">");
+        }
+    }
 
     friend std::ostream& operator<<(std::ostream& os, const utc_date_time& value)
     {
@@ -190,80 +255,6 @@ bool utc_date_time::_simulationTimeInitialized = false;
 
 #endif
 
-static_assert(std::is_trivially_copyable<utc_date_time::parent_type>::value, "Oops, why utc_date_time::parent_type is not trivially copyable?!");
-static_assert(std::is_trivially_copyable<utc_date_time>::value, "Oops, why utc_date_time is not trivially copyable?!");
+static_assert(std::is_trivially_copyable<utc_date_time>::value);
 
-// See "date Time Input/Output" in boost documentation for a detailed description of various formats
-utc_date_time&
-utc_date_time::fromString(const std::string& value, const std::string& format /* = "" */)
-{
-    using namespace boost::gregorian;
-    using namespace boost::posix_time;
-    using namespace boost::local_time;
-
-    if (value.empty()) {
-        clear();
-        return *this;
-    }
-
-    parent_type dt;
-    try {
-        time_input_facet facet;
-        if (format.empty()) {
-            facet.set_iso_extended_format();
-        } else {
-            facet.format(format.c_str());
-        }
-
-        std::istringstream s(value);
-        s.exceptions(std::ios_base::failbit); // throw exception when parsing fails
-
-        std::istreambuf_iterator<char> i(s), e;
-        facet.get(i, e, s, dt);
-    } catch (const std::out_of_range& e) {
-        throw e; // TODO fix
-                 // FRAMEWORK_THROW
-                 // (
-                 //     ConversionException,
-                 //     "Failed to parse <" << value << "> as utc_date_time "
-                 //     "using format <" << format << "> "
-                 //     "with error <" << e.what () << ">"
-                 // );
-    }
-
-    *this = dt;
-    return *this;
-}
-
-void utc_date_time::to_string(std::string& s, const char* format) const
-{
-    using namespace boost::posix_time;
-
-    if (NULL == format || 0 == *format) {
-        return to_string(s);
-    }
-
-    try {
-        time_facet facet;
-        facet.format(format);
-
-        std::ostringstream str;
-        str.exceptions(std::ios_base::failbit); // throw exception when parsing fails
-
-        std::ostreambuf_iterator<char> ost(str);
-        facet.put(ost, str, ' ', *this);
-
-        s = str.str();
-    } catch (const std::out_of_range& e) {
-        throw e;
-        // TODO fix this
-        //  FRAMEWORK_THROW
-        //  (
-        //      framework::ConversionException,
-        //      "Failed to format <" << *this << "> "
-        //      "using format <" << format << "> "
-        //      "with error <" << e.what () << ">"
-        //  );
-    }
-}
 } // namespace dt
