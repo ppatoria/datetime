@@ -147,7 +147,7 @@ public:
         return fixed;
     }
 
-    time_zone_ptr timezone()
+    time_zone_ptr local()
     {
         return _time_zone;
     }
@@ -159,7 +159,7 @@ public:
      * is not expected that the timezone will be changed once the
      * application has been started.
      **/
-    void timezone(const time_zone_ptr& zone)
+    void from_time_zone_ptr(const time_zone_ptr& zone)
     {
         _time_zone = zone;
     }
@@ -167,7 +167,7 @@ public:
     /**
      * Set the local time zone from a POSIX time zone specification
      */
-    void timezone(const std::string& spec)
+    void from_string(const std::string& spec)
     {
         using namespace boost::local_time;
         time_zone_ptr zone(new posix_time_zone(spec));
