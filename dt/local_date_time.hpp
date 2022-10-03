@@ -1,5 +1,5 @@
 #pragma once
-
+#include <dt/time_zone.hpp>
 /**
 https://www.gnu.org/software/libc/manual/html_node/Time-Zone-Functions.html
 **/
@@ -9,6 +9,8 @@ https://www.gnu.org/software/libc/manual/html_node/Time-Zone-Functions.html
  * in seconds west of UTC.
  * For example, in the U.S.Eastern time zone, the value is 5*60*60.
  */
+#include <ctime>
+
 #ifndef _timezone
 #define _timezone ::timezone
 #endif
@@ -39,6 +41,35 @@ https://www.gnu.org/software/libc/manual/html_node/Time-Zone-Functions.html
 #ifndef _daylight
 #define _daylight ::daylight
 #endif
+
+struct time_zone_info {
+
+    auto daylight() const -> decltype(::daylight)
+    {
+#ifdef _daylight
+        return _daylight;
+#else
+        return ::daylight;
+#endif
+    }
+    //   auto tzname() const -> decltype(::tzname)
+    //     {
+    // #ifdef _tzname
+    //         return _tzname;
+    // #else
+    //         return ::tzname;
+    // #endif
+    //     }
+
+    auto timezone() const -> decltype(::timezone)
+    {
+#ifdef _timezone
+        return _timezone;
+#else
+        return ::timezone;
+#endif
+    }
+};
 
 #include "utc_date_time.hpp"
 namespace dt {
