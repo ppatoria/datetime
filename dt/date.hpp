@@ -153,6 +153,6 @@ public:
         return os << value.to_string();
     }
 };
-static_assert(std::is_trivially_copyable_v<gregorian_date>);
-static_assert(std::is_trivially_copyable_v<date>);
+static_assert(std::is_trivially_copyable<gregorian_date>::value, "Date and its dependencies should be trivially copyable.");
+static_assert(std::is_trivially_copyable<date>::value, "Date and its dependencies should be trivially copyable.");
 } // namespace dt

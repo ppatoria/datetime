@@ -90,12 +90,6 @@ public:
 
     static utc_date_time now()
     {
-#ifdef SIMULATION
-
-        if (_simulationTimeInitialized)
-            return _simulationTime;
-#endif
-
         return boost::posix_time::microsec_clock::universal_time();
     }
 
@@ -233,28 +227,7 @@ public:
     {
         return os << value.to_string();
     }
-
-#ifdef SIMULATION
-
-    static void setSimulationTime(const utc_date_time& simTime)
-    {
-        _simulationTime = simTime;
-        _simulationTimeInitialized = true;
-    }
-
-private:
-    static utc_date_time _simulationTime;
-    static bool _simulationTimeInitialized;
-
-#endif
 };
-#ifdef SIMULATION
-
-utc_date_time utc_date_time::_simulationTime = utc_date_time();
-bool utc_date_time::_simulationTimeInitialized = false;
-
-#endif
-
 static_assert(std::is_trivially_copyable<utc_date_time>::value);
 
 } // namespace dt

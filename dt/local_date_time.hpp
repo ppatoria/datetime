@@ -160,7 +160,7 @@ public:
     /**
        See "date Time Input/Output" in boost documentation for a detailed description of various formats
     */
-    local_date_time& fromString(
+    local_date_time& from_string(
         const std::string& value,
         const std::string& format = "")
     {
