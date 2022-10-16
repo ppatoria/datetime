@@ -1,20 +1,22 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.20)
 project(tests)
 
 message(STATUS "CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 message(STATUS "BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
-################
-# Dependencies #
-################
+ #################################################################
+ #                     Dependencies                              #
+ #################################################################
 
 # -- Boost
-#===============
+#------------
 find_package(Boost REQUIRED)
-message(STATUS "Boost version: ${Boost_VERSION}")
+if(NOT Boost_FOUND)
+  message(FATAL_ERROR "Boost not found" )
+endif()
 
 # -- Catch2
-#==============
+#--------------
 Include(FetchContent)
 FetchContent_Declare(
   Catch2
@@ -23,9 +25,9 @@ FetchContent_Declare(
   )
 FetchContent_MakeAvailable(Catch2)
 
-##############
-# Unit Tests #
-##############
+ ###################################################################
+ #                      Unit Tests                                 #
+ ###################################################################
 add_executable( tests
   date_tests.cpp
   time_duration_tests.cpp
@@ -42,5 +44,8 @@ target_include_directories(tests PUBLIC
   ${Boost_INCLUDE_DIR}
   )
 
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+  target_link_libraries(tests PRIVATE
+    Catch2::Catch2WithMain
+    ${BOOST_LIBRARY_DIRS}/libboost_date_time.a
+  )
 enable_testing()

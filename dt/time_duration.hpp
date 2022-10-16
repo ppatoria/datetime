@@ -238,7 +238,7 @@ public:
         return os << value.to_string();
     }
 };
-static_assert(std::is_trivially_copyable_v<posix_time_duration>);
-static_assert(std::is_trivially_copyable_v<time_duration>);
+static_assert(!std::is_trivially_copyable_v<posix_time_duration>);
+static_assert(!std::is_trivially_copyable_v<time_duration>);
 
 } // namespace dt

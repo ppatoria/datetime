@@ -1,6 +1,7 @@
 #pragma once
-#include "time_zone.hpp"
-#include "utc_date_time.hpp"
+#include "boost/date_time/local_time/custom_time_zone.hpp"
+#include "boost/date_time/time_zone_base.hpp"
+#include "dt/utc_date_time.hpp"
 #include <dt/time_zone.hpp>
 #include <stdexcept>
 namespace dt {
@@ -37,14 +38,14 @@ public:
     {
     }
 
-    bool is_daylight_saving()
+    std::string time_zone_name()
     {
-        return dt::time_zone_info::is_daylight_saving();
+        return zone_name(false /*as offset*/);
     }
 
-    dt::time_zone_info::time_zone_name tz_name()
+    std::string time_zone_offset()
     {
-        return dt::time_zone_info::tz_name();
+        return zone_name(true /*as offset*/);
     }
 
     auto tz_difference_from_utc()
