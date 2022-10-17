@@ -28,21 +28,22 @@ def test():
 
 def main():
     options = get_options();
-    if os.path.exists("build") :
+    build_dir = os.path.dirname(os.path.realpath(__file__)) + os.sep + 'build'
+    if os.path.exists(build_dir) :
         if options.rebuild:
-            shutil.rmtree("build")
-            os.makedirs("build")
-            os.chdir("build")
+            shutil.rmtree(build_dir)
+            os.makedirs(build_dir)
+            os.chdir(build_dir)
             configure(options)
             make()
             test()
         else:
-            os.chdir("build")
+            os.chdir(build_dir)
             make()
             test()
     else:
-        os.makedirs("build")
-        os.chdir("build")
+        os.makedirs(build_dir)
+        os.chdir(build_dir)
         configure(options)
         make()
         test()
