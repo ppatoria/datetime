@@ -2,26 +2,29 @@
 #include "catch2/catch_test_macros.hpp"
 #include "dt/utc_date_time.hpp"
 #include <dt/local_date_time.hpp>
+#include <regex>
 
 TEST_CASE("local_date_time", "[misc]")
 {
-    /** TODO remove print staements */
+    std::regex date_format("[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{6}");
+
     auto utc = dt::utc_date_time::now();
-    std::cout << "utc: " << utc << std::endl;
+    REQUIRE(std::regex_match(utc.to_string(), date_format));
 
     dt::local_date_time local(utc);
-    std::cout << "local: " << local << std::endl;
+    REQUIRE(std::regex_match(local.to_string(), date_format));
 
-    std::cout << "is dst: " << local.is_dst() << std::endl;
-
+    if(local.is_dst()){
+        REQUIRE(local.time_zone_name() == "EDT");
+        REQUIRE(local.time_zone_offset() == "-04:00");
+    }else{
+        REQUIRE(local.time_zone_name() == "EST");
+        REQUIRE(local.time_zone_offset() == "-05:00");
+    }
     REQUIRE(utc.date() >= local.date());
     REQUIRE(utc.time() != local.time());
 
     REQUIRE(utc.date() >= local.date());
     REQUIRE(utc.time() != local.time());
-    std::cout << utc.time() - local.time() << std::endl;
-    std::cout << local.time_zone_name() << std::endl;
-    std::cout << local.time_zone_offset() << std::endl;
-    std::cout << "local: " << local.time() << std::endl;
     REQUIRE(local.tz_difference_from_utc() == 5 * 60 * 60);
 }

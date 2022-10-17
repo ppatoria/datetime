@@ -15,7 +15,7 @@ def create_cmd(options):
     boost_lib_dir=""
     if(options.boost_lib_dir != None):
         boost_lib_dir=" -DBOOST_LIBRARY_DIRS=" + options.boost_lib_dir
-    return 'cmake ' + '\"-G Unix Makefiles\"' + " -DCMAKE_BUILD_TYPE=Debug" +  boost_lib_dir + " -DCMAKE_EXPORT_COMPILE_COMMANDS=1" + " -DCMAKE_CXX_STANDARD=17 ../"
+    return 'cmake \"-G Unix Makefiles\" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DCMAKE_CXX_STANDARD=17 ' + boost_lib_dir + '../'
 
 def configure(options):
     os.system(create_cmd(options))
