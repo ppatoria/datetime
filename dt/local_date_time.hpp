@@ -1,9 +1,11 @@
 #pragma once
-#include "boost/date_time/local_time/custom_time_zone.hpp"
-#include "boost/date_time/time_zone_base.hpp"
+#include <boost/date_time/local_time/local_time.hpp>
+#include "boost/smart_ptr/shared_ptr.hpp"
 #include "dt/utc_date_time.hpp"
-#include <dt/time_zone.hpp>
 #include <stdexcept>
+#include <sys/select.h>
+#include <dt/local_time_zone.hpp>
+
 namespace dt {
 
 class local_date_time : public boost::local_time::local_date_time {
@@ -12,19 +14,17 @@ public:
     using boost_local_date_time = boost::local_time::local_date_time;
 
     local_date_time()
-        : boost_local_date_time(boost::date_time::not_a_date_time)
-    {
-    }
+        : boost_local_date_time(boost::date_time::not_a_date_time) {}
 
     local_date_time(const boost_local_date_time& value)
         : boost_local_date_time(value)
     {
     }
 
-    local_date_time(const utc_date_time& value)
+    local_date_time(const utc_date_time &value)
         : boost_local_date_time(
-            value,
-            time_zone().local())
+              value,
+              time_zone().local())
     {
     }
 
@@ -46,11 +46,6 @@ public:
     std::string time_zone_offset()
     {
         return zone_name(true /*as offset*/);
-    }
-
-    auto tz_difference_from_utc()
-    {
-        return dt::time_zone_info::tz_difference_from_utc();
     }
 
     local_date_time&
